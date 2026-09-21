@@ -53,6 +53,13 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _invincibilityTimer -= Time.deltaTime;
+
+        if (_score >= 10000)
+        {
+            _timerText.text = "<color=#ffff00>YOU WIN! </color>" + TimeSpan.FromSeconds(_timeActive).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
+            Destroy(gameObject);
+            return;
+        }
         
         _timeActive += Time.deltaTime;
         
