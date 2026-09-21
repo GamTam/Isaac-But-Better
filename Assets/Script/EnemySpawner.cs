@@ -15,7 +15,6 @@ public class EnemySpawner : MonoBehaviour
         if (_currentTimer >= _spawnTime)
         {
             _currentTimer = 0;
-            // Instantiate(_enemyPrefab, transform.position, Quaternion.identity); - DO THIS AT START
             Bounds bounds = GetComponent<Collider2D>().bounds;
             float offsetX = Random.Range(-bounds.extents.x, bounds.extents.x);
             float offsetY = Random.Range(-bounds.extents.y, bounds.extents.y);

@@ -24,7 +24,12 @@ public class EnemyController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            other.gameObject.GetComponent<PlayerController>().PlayerKillCheck();
+            PlayerController player = other.gameObject.GetComponent<PlayerController>();
+            
+            if (player.GetInvincible) 
+                player.EnemyKillCheck(7, gameObject, _pointValue);
+            else 
+                player.PlayerKillCheck(transform.position.y - (transform.localScale.y / 2));
         }
     }
 }

@@ -15,27 +15,47 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _floorDistance = 1f;
     [SerializeField] private int _maxJumpCount = 1;
     [SerializeField] private Vector2 _velocity = Vector2.zero;
+    [SerializeField] private float _maxInvincibilityTimer = 5;
     [Space]
     [SerializeField] private TMP_Text _timerText; 
     [SerializeField] private TMP_Text _killText;
+    [Space]
+    [SerializeField] private Color _normalColour;
+    [SerializeField] private Color _invincibleColour;
     
     private LayerMask _layerMask;
     private float _timeActive;
     private int _score;
     private int _currentJumps;
+    private SpriteRenderer _spriteRenderer;
 
     private bool _shouldKillThisFrame;
     private bool _landedOnEnemyThisFrame;
 
+    private bool _isInvincible = false;
+    private float _invincibilityTimer = 0f;
+
+    public bool GetInvincible => _isInvincible;
+    
+    public void MakeInvincible()
+    {
+        _isInvincible = true;
+        _invincibilityTimer = _maxInvincibilityTimer;
+        _spriteRenderer.color = _invincibleColour;
+    }
+    
     private void Awake()
     {
         _layerMask = LayerMask.GetMask("Floor");
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
     
     private void Update()
     {
+        _invincibilityTimer -= Time.deltaTime;
+        
         _timeActive += Time.deltaTime;
-
+        
         _timerText.text = "<color=#ffff00>TIME </color>" + TimeSpan.FromSeconds(_timeActive).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
         _killText.text = "<color=#ffff00>SCORE </color>" + _score;
 
@@ -86,6 +106,12 @@ public class PlayerController : MonoBehaviour
         }
         
         transform.position = (Vector2) transform.position + (_velocity * Time.deltaTime);
+        
+        if (_invincibilityTimer <= 0 && _isInvincible)
+        {
+            _isInvincible = false;
+            _spriteRenderer.color = _normalColour;
+        }
     }
 
     private void LateUpdate()
@@ -99,6 +125,13 @@ public class PlayerController : MonoBehaviour
 
     public void EnemyKillCheck(float amount, GameObject enemy, int score)
     {
+        if (_isInvincible)
+        {
+            Destroy(enemy.gameObject);
+            _score += score;
+            return;
+        }
+        
         if (_velocity.y < 0f)
         {
             _velocity.y = amount;
@@ -108,9 +141,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void PlayerKillCheck()
+    public void PlayerKillCheck(float bottomPoint)
     {
-        if (_velocity.y >= 0f)
+        if (_velocity.y >= 0f || transform.position.y < bottomPoint)
         {
             _shouldKillThisFrame = true;
         }
