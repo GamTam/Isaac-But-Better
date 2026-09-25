@@ -29,7 +29,8 @@ public class EnemySpawner : MonoBehaviour
             spawnPos.x += offsetX;
             spawnPos.y += offsetY;
             
-            Instantiate(_enemyPrefab, spawnPos, Quaternion.identity);
+            EnemyController enemy = Instantiate(_enemyPrefab, spawnPos, Quaternion.identity);
+            enemy.SetPointValue();
         }
     }
 }

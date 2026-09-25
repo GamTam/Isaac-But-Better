@@ -11,4 +11,9 @@ public class InvinciblePickup : EnemyController
             Destroy(gameObject);
         }
     }
+
+    public override void SetPointValue()
+    {
+        return;
+    }
 }

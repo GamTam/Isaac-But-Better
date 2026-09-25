@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemyController : MonoBehaviour
 {
@@ -25,6 +26,11 @@ public class EnemyController : MonoBehaviour
         {
             other.gameObject.GetComponent<PlayerController>().EnemyKillCheck(7, gameObject, _pointValue);
         }
+    }
+
+    public virtual void SetPointValue()
+    {
+        _pointValue = Mathf.RoundToInt(Random.Range(_pointValue * 0.8f, _pointValue * 1.2f));
     }
 
     protected void OnCollisionEnter2D(Collision2D other)
