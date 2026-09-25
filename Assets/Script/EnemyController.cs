@@ -5,6 +5,13 @@ public class EnemyController : MonoBehaviour
 {
     [SerializeField] private float _timeUntilDespawn = 10f;
     [SerializeField] private int _pointValue;
+    [SerializeField] private GameManager _gameManager;
+
+    protected void Start()
+    {
+        _gameManager = GameManager.Instance;
+    }
+
 
     protected void Update()
     {
@@ -31,5 +38,13 @@ public class EnemyController : MonoBehaviour
             else 
                 player.PlayerKillCheck(transform.position.y - (transform.localScale.y / 2));
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (_gameManager.CurrentState != GameManager.GameState.Gaming)  return;
+        
+        if (_timeUntilDespawn > 0) _gameManager.Score += _pointValue;
+        else _gameManager.Score -= (_pointValue / 4);
     }
 }

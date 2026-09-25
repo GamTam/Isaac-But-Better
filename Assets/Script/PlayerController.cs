@@ -22,10 +22,9 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] private Color _normalColour;
     [SerializeField] private Color _invincibleColour;
-    
+
+    [SerializeField] private GameManager _gameManager;
     private LayerMask _layerMask;
-    private float _timeActive;
-    private int _score;
     private int _currentJumps;
     private SpriteRenderer _spriteRenderer;
 
@@ -49,22 +48,15 @@ public class PlayerController : MonoBehaviour
         _layerMask = LayerMask.GetMask("Floor");
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
+
+    private void Start()
+    {
+        _gameManager = GameManager.Instance;
+    }
     
     private void Update()
     {
         _invincibilityTimer -= Time.deltaTime;
-
-        if (_score >= 10000)
-        {
-            _timerText.text = "<color=#ffff00>YOU WIN! </color>" + TimeSpan.FromSeconds(_timeActive).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
-            Destroy(gameObject);
-            return;
-        }
-        
-        _timeActive += Time.deltaTime;
-        
-        _timerText.text = "<color=#ffff00>TIME </color>" + TimeSpan.FromSeconds(_timeActive).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
-        _killText.text = "<color=#ffff00>SCORE </color>" + _score;
 
         if (Input.GetButtonDown("Jump") && _currentJumps < _maxJumpCount)
         {
@@ -124,8 +116,11 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         if (_shouldKillThisFrame && !_landedOnEnemyThisFrame)
+        {
+            _gameManager.CurrentState = GameManager.GameState.Lose;
             Destroy(gameObject);
-        
+        }
+
         _shouldKillThisFrame = false;
         _landedOnEnemyThisFrame = false;
     }
@@ -135,7 +130,6 @@ public class PlayerController : MonoBehaviour
         if (_isInvincible)
         {
             Destroy(enemy.gameObject);
-            _score += score;
             return;
         }
         
@@ -143,7 +137,6 @@ public class PlayerController : MonoBehaviour
         {
             _velocity.y = amount;
             Destroy(enemy.gameObject);
-            _score += score;
             _landedOnEnemyThisFrame = true;
         }
     }

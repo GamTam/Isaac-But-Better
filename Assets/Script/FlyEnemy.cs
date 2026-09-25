@@ -6,6 +6,7 @@ public class FlyEnemy : EnemyController
 
     private void Start()
     {
+        base.Start();
         if (transform.position.x > 0) _moveSpeed *= -1;
     }
     
