@@ -16,4 +16,9 @@ public class InvinciblePickup : EnemyController
     {
         return;
     }
+
+    public new void OnDestroy()
+    {
+        return;
+    }
 }

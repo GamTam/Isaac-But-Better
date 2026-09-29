@@ -7,10 +7,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float _timeUntilDespawn = 10f;
     [SerializeField] private int _pointValue;
     [SerializeField] private GameManager _gameManager;
+    [SerializeField] private SoundManager _soundManager;
 
     protected void Start()
     {
         _gameManager = GameManager.Instance;
+        _soundManager = SoundManager.Instance;
     }
 
 
@@ -50,7 +52,11 @@ public class EnemyController : MonoBehaviour
     {
         if (_gameManager.CurrentState != GameManager.GameState.Gaming)  return;
         
-        if (_timeUntilDespawn > 0) _gameManager.Score += _pointValue;
+        if (_timeUntilDespawn > 0)
+        {
+            _soundManager.Play("Destroy");
+            _gameManager.Score += _pointValue;
+        }
         else _gameManager.Score -= (_pointValue / 4);
     }
 }

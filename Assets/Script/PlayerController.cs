@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Color _invincibleColour;
 
     [SerializeField] private GameManager _gameManager;
+    [SerializeField] private SoundManager _soundManager;
     private LayerMask _layerMask;
     private int _currentJumps;
     private SpriteRenderer _spriteRenderer;
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _soundManager = SoundManager.Instance;
         _gameManager = GameManager.Instance;
     }
     
@@ -60,6 +62,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && _currentJumps < _maxJumpCount)
         {
+            _soundManager.Play("Jump");
             _currentJumps += 1;
             _velocity.y = _jumpImpulse;
         }
@@ -99,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
         if (hit && _velocity.y < 0)
         {
+            _soundManager.Play("Land");
             _currentJumps = 0;
             _velocity.y = 0;
             transform.position = new Vector3(transform.position.x, hit.collider.transform.position.y + hit.collider.bounds.extents.y, transform.position.z);
